@@ -1,0 +1,154 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{bbold}
+\pagestyle{plain}
+\usepackage{fancybox}
+\usepackage{bm}
+\usepackage{geometry}
+\geometry{left=2cm,right=2cm,top=2.5cm,bottom=2.5cm}
+
+
+\begin{document}
+
+
+
+\begin{center}
+{ \normalfont \Large \textbf{2SLS Estimation of Average Causal Effects With Variable Treatment Intensity} }\\
+\vspace{3mm}
+{ \large {Angrist and Imbens 1995} }
+\end{center}
+
+\section{Model}
+\subsection{Set up}
+Let $S$ be a person's years of schooling, Let $Z\in\{0,1\}$ be a binary instrument for $S$. 
+\[Z=\begin{cases} 1 \ \ \text{if born in later quarters} \\ 0 \ \ \text{if born in first quarters}\end{cases} \]
+\begin{itemize}
+\item
+Quarter of birth is relevant because laws typically require students to enter school in the fall of the year in which they turn 6, but allow students to drop out of school when they reach age 16. Thus students born in the first quarter of the year enter school at an older age than do students born in later quarter and are able to participate less schooling.
+\end{itemize}
+Define $S_z \in \{0,1,2,...,J\}$ to be the number of years of schooling completed by a student conditional on the student's quarter of birth $Z$, Let $Y_j$ denote potential logged earnings under $j$ years of schooling. \\
+\textbf{Parameters of interest:} distribution of $Y_j-Y_{j-1}$.
+
+\subsection{Assumptions}
+\textbf{A1.} $(Y_j,S_Z)\perp Z$. This is also called stable unit treatment values (SUTVA). 
+\begin{itemize}
+\item 
+This independence assumption alone is not sufficient to identify average treatment effect, even if we assume $ATT_j=Y_j-Y_{j-1} =\alpha$ is constant for all $j$. To see why, notice
+\[\begin{aligned}
+&E(Y|Z=1)-E(Y|Z=0) \\
+=&E(Y_0+(Y_1-Y_0)S_1|Z=1)-E(Y_0+(Y_1-Y_0)S_0|Z=0) \\
+=&E(Y_0+(Y_1-Y_0)S_1)-E(Y_0+(Y_1-Y_0)S_0) \\
+=&E[(Y_1-Y_0)(S_1-S_0)] \\
+=&E[Y_1-Y_0|S_1-S_0=1]P(S_1-S_0=1) \\
+&-E[Y_1-Y_0|S_1-S_0=-1]P(S_1-S_0=-1)
+\end{aligned}\]
+where the second line use the constant $ATT_j$, the third line use the SUTVA assumption, and in the fourth line we assume $S_1-S_0=\{-1,0,1\}$.
+\end{itemize}
+\textbf{A2.} $S_1-S_0 \geq 0$ for every student.
+\begin{itemize}
+\item 
+This is a non-refutable assumption, but if it is true, then we must have 
+\[P(S_1\geq j) \geq P(S_0\geq j), \forall j\]
+which can be used to test whether this assumption holds.
+\item 
+Under A1 and A2, the LATE is point identified.
+\end{itemize}
+
+\subsection{Theorems}
+\textbf{Theorem 1:} Suppose A1 and A2 holds, and $P(S_1 \geq j>S_0) >0$ for at least one j, which means the instrument $Z$ must affect the level of treatment $S$. Then 
+\[ 
+\frac{E(Y|Z=1)-E(Y|Z=0)}{E(S|Z=1)-E(S|Z=0)}=\sum_{j=1}^J w_j E(Y_j-Y_{j-1}|S_1 \geq j>S_0) \equiv \beta
+\]
+where 
+\[w_j=\frac{P(S_1 \geq j>S_0)}{\sum_{j=1}^J P(S_1 \geq j>S_0)}\]
+{\it Proof.} Define 
+\[\lambda_{Z,j}=\mathbb{1}(S_Z\geq j)\]
+By definition, $\lambda_{Z,0}=1$, $\lambda_{Z,J+1}=0$, and $\lambda_{Z,k+1}-\lambda_{Z,k}=\mathbb{1}(S_Z=k)$. Then
+\[\begin{aligned}
+Y&=Z Y_{S_1}+(1-Z) Y_{S_0} \\
+&=Z\left[\sum_{j=0}^J Y_j(\lambda_{1,j}-\lambda_{1,j+1})\right] + (1-Z)\left[\sum_{j=0}^J Y_j(\lambda_{0,j}-\lambda_{0,j+1})\right]
+\end{aligned}\]
+Thus
+\[\begin{aligned}
+&E(Y|Z=1)-E(Y|Z=0) \\
+=&E\left[\sum_{j=0}^J Y_j(\lambda_{1,j}- \lambda_{1,j+1})-\lambda_{0,j}+\lambda_{0,j+1} \right] \\
+=&E\left[\sum_{j=1}^J (Y_j-Y_{j-1})(\lambda_{1,j}-\lambda_{0,j})+Y_0 (\lambda_{1,0}-\lambda_{0,0})+Y_J(\lambda_{0,J+1}-\lambda_{1,J+1})\right] \\
+=&E\left[\sum_{j=1}^J (Y_j-Y_{j-1})(\lambda_{1,j}-\lambda_{0,j}) \right] \\
+=&\sum_{j=1}^J E(Y_j-Y_{j-1}|\lambda_{1,j}-\lambda_{0,j}=1) P(\lambda_{1,j}-\lambda_{0,j}=1) \\
+=&\sum_{j=1}^J E(Y_j-Y_{j-1}|S_1 \geq j>S_0) P(S_1 \geq j>S_0)
+\end{aligned}\]
+Similarly, simply substitute $Y_j$ by $j$ gives
+\[E(S|Z=1)-E(S|Z=0)=\sum_{j=1}^J P(S_1 \geq j>S_0)\]
+Therefore complete the proof.
+\begin{itemize}
+\item 
+In this proof, we consider $S_1-S_0$ to be 0 or 1, which is plausible in this problem. But if $S_1-S_0\geq 2$ for some person, then $S_1 \geq j>S_0$ holds for multiple $j$, which cause a overlapping problem.
+\item
+$w_j$ can also be estimated from the data. Notice
+\[\begin{aligned}
+P(S_{1} \geq j>S_{0}) &=P(S_{1} \geq j)-P(S_{0} \geq j) \\
+&=P(S_{0}<j)-P(S_{1}<j) \\
+&=P(S<j | Z=0)-P(S<j | Z=1) \\
+\end{aligned}\]
+\end{itemize}
+\textbf{Theorem 2:} Extend binary instrument $Z$ to $Z=\{0,1,2,...,K\}$, while $l<m$ implies $E(S|Z=l)<E(S|Z=m)$.
+If regress Y on $(1,\hat{S})$ where 
+\[\hat{S}=\hat{\gamma}_0+\hat{\gamma}_1\mathbb{1}(Z=1)+\hat{\gamma}_2 \mathbb{1}(Z=2) +...+\hat{\gamma}_K \mathbb{1}(Z=K) \]
+Then the resulting estimate has probability limit 
+\[\beta_{z}=\frac{E\{Y \cdot[E(S|Z)-E(S)]\}}{E\{E(S|Z) \cdot[E(S|Z)-E(S)]\}}=\sum_{k=1}^{K} \mu_{k} \beta_{k, k-1}\]
+where 
+\[\beta_{k, k-1}=\frac{E(Y|Z=k)-E(Y|Z=k-1)}{E(S|Z=k)-E(S|Z=k-1)}\]
+and
+\[\mu_{k}=\frac{[E(S|Z=k)-E(S|Z=k-1)]\cdot \sum_{l=k}^{K} P(Z=l)[E(S|Z=l)-E(S)]}{\sum_{l=0}^{K} P(Z=l) E(S|Z=l)[E(S|Z=l)-E(S)]} \]
+with $0 \leq \mu_{k} \leq 1 \ \ \text {and} \ \ \sum_{k=1}^{K} \mu_{k}=1$. \\
+{\it Proof.} Notice
+\[\mu_{k} \beta_{k, k-1}=\frac{[E(Y|Z=k)-E(Y|Z=k-1)]\cdot \sum_{l=k}^{K} P(Z=l)[E(S|Z=l)-E(S)]}{\sum_{l=0}^{K} P(Z=l) E(S|Z=l)[E(S|Z=l)-E(S)]}\]
+Since 
+\[E\Bigl\{E(S|Z) \cdot \bigl[E(S|Z)-E(S)\bigr]\Bigr\} =\sum_{l=0}^{K} P(Z=l) E(S|Z=l)\bigl[E(S|Z=l)-E(S)\bigr]\]
+It suffices to show
+\[E\Bigl\{Y \bigl[E(S|Z)-E(S)\bigr]\Bigr\}=\sum_{k=1}^K \left\{ \bigl[E(Y|Z=k)-E(Y|Z=k-1)\bigr]\cdot \sum_{l=k}^{K} P(Z=l)\bigl[E(S|Z=l)-E(S)\bigr] \right\} \]
+Notice
+\[E(Y|Z=l)=\sum_{k=1}^l \bigl[E(Y|Z=k)-E(Y|Z=k-1)\bigr]+E(Y|Z=0)\]
+And
+\[\sum_{l=1}^K\Bigl\{ P(Z=l) E(Y|Z=0) \bigl[E(S|Z=l)-E(S)\bigr] \Bigr\}=E(Y|Z=0)E\bigl[E(Z|S)-E(S)\bigr]=0 \]
+Thus
+\[\begin{aligned}
+E\Bigl\{Y\bigl[E(S|Z)-E(S)\bigr]\Bigr\}&=\sum_{l=1}^K\Bigl\{ P(Z=l) E(Y|Z=l) \bigl[E(S|Z=l)-E(S)\bigr]\Bigr\} \\
+&=\sum_{l=1}^K\sum_{k=1}^l\Bigl\{\bigl[E(Y|Z=k)-E(Y|Z=k-1)\bigr] P(Z=l) \bigl[E(S|Z=l)-E(S)\bigr]\Bigr\} \\
+&=\sum_{k=1}^K\sum_{l=k}^K\Bigl\{\bigl[E(Y|Z=k)-E(Y|Z=k-1)\bigr] P(Z=l) \bigl[E(S|Z=l)-E(S)\bigr]\Bigr\} \\
+&=\sum_{k=1}^K \left\{ \bigl[E(Y|Z=k)-E(Y|Z=k-1)\bigr]\cdot \sum_{l=k}^{K} P(Z=l)\bigl[E(S|Z=l)-E(S)\bigr] \right\}
+\end{aligned}\]
+Therefore complete the proof.
+
+\section{My summary}
+The research question of this paper is:
+\[Y=\beta_0+\beta_1 S+\varepsilon\]
+\[S=\gamma_0+\gamma_1 Z+\eta\]
+with (1): $Cov(\eta,\varepsilon)\neq0$, and (2): $\beta_1$ is not constant. \\
+The contribution of this paper is it gives an interpretation for 2SLS estimand of regressing Y on $\hat{S}=\hat{\gamma_0}+ \hat{\gamma_1} Z$. 
+Theorem 1 shows when $Z$ is binary, this estimand is a weighted average of LATE.
+\[\begin{aligned}
+\hat{\beta}_1^{2SLS}&=\frac{Cov(Y,Z)}{Cov(S,Z)} \\
+&=\frac{E(Y|Z=1)-E(Y|Z=0)}{E(S|Z=1)-E(S|Z=0)} \\
+&=\frac{E(Y_{S_1}-Y_{S_0})}{E(S_1-S_0)} \\
+&=\frac{E(Y_{S_1}-Y_{S_0}|S_1-S_0>0)}{E(S_1-S_0|S_1-S_0>0)} \\
+&=E(Y_{S_1}-Y_{S_0}|S_1-S_0=1) \\
+&=\sum_{j=1}^J w_j E(Y_j-Y_{j-1}|S_1 \geq j>S_0)
+\end{aligned}\]
+where the third line uses $(Y_j,S_Z) \perp Z$, the fourth line uses $S_1-S_0 \geq 0$. \\
+Theorem 2 extends binary $Z$ to $Z=\{0,1,2,...,K\}$ and shows then the 2SLS estimand is a weighted average of $\beta_{l,l-1}$ where
+\[\beta_{l,l-1}=\frac{E(Y|Z=l)-E(Y|Z=l-1)}{E(S|Z=l)-E(S|Z=l-1)}\]
+
+\section{Comments and questions}
+\begin{itemize}
+\item
+I don't like the result in this paper, although it is definitely correct. The problem is our parameters of interest is distribution of $Y_j-Y_{j-1}$ for the {\it whole population}. However, the result in this paper only shows the 2SLS estimand is a weighted average of $Y_j-Y_{j-1}$ for {\it movers}. What makes this even worse is the picture in the original paper shows the CDF of $S_1$ and $S_0$ is very close, which implies the movers are only an {\it extremely small} part of the whole population. Therefore, we still cannot say anything about $Y_j-Y_{j-1}$ for the whole population.
+\item
+Move back to the real world, it is possible that the relationship between education and wage are more significant for 'talented' students and are less significant for 'untalented' students. It is also plausible that 'untalented' students are more likely to quit schooling earlier because their birth quarter and (maybe a bug of) the law because they find schooling uninteresting or unhelpful. Then using $Z$ as an instrument is problematic because the estimand only counts LATE, which is not equal to ATE.
+\end{itemize}
+
+\end{document}
