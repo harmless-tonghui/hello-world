@@ -122,15 +122,24 @@ E\Bigl\{Y\bigl[E(S|Z)-E(S)\bigr]\Bigr\}&=\sum_{l=1}^K\Bigl\{ P(Z=l) E(Y|Z=l) \bi
 &=\sum_{k=1}^K\sum_{l=k}^K\Bigl\{\bigl[E(Y|Z=k)-E(Y|Z=k-1)\bigr] P(Z=l) \bigl[E(S|Z=l)-E(S)\bigr]\Bigr\} \\
 &=\sum_{k=1}^K \left\{ \bigl[E(Y|Z=k)-E(Y|Z=k-1)\bigr]\cdot \sum_{l=k}^{K} P(Z=l)\bigl[E(S|Z=l)-E(S)\bigr] \right\}
 \end{aligned}\]
-Therefore complete the proof.
-
-\section{My summary}
+Therefore complete the proof. 
+\newpage
+\noindent
+\textbf{Theorem 3:} 2SLS estimates with covariates. Let $g(X)$ be a matrix constructed from indicator variables for each value of X. Consider the 2SLS estimate computed using $g(X)$ and a full set of interactions between $g(X)$ and $Z$ as instruments for a regression of Y on rows of $g(X)$ and $S$. The resulting estimate is 
+\[\begin{aligned}
+\beta_{x} &=\frac{E\{Y \cdot[E(S|X,Z)-E(S|X)]\}}{E\{S \cdot[E(S|X, Z)-E(S|X)]\}} \\
+&=\frac{E[\beta(X) \Theta(X)]}{E[\Theta(X)]}
+\end{aligned}\]
+where
+\[\Theta(X)=E\Bigl\{E(S|X,Z) \cdot \bigl[E(S|X,Z)-E(S|X)\bigr] | X\Bigr\}\]
+\[\beta(X)=\frac{E\{Y \cdot[E(S|X,Z)-E(S|X)] | X\}} {E\{S \cdot[E(S |X,Z)-E(S|X)] | X\}}\]
+\section{Summary}
 The research question of this paper is:
 \[Y=\beta_0+\beta_1 S+\varepsilon\]
 \[S=\gamma_0+\gamma_1 Z+\eta\]
 with (1): $Cov(\eta,\varepsilon)\neq0$, and (2): $\beta_1$ is not constant. \\
-The contribution of this paper is it gives an interpretation for 2SLS estimand of regressing Y on $\hat{S}=\hat{\gamma_0}+ \hat{\gamma_1} Z$. 
-Theorem 1 shows when $Z$ is binary, this estimand is a weighted average of LATE.
+The contribution of this paper is it gives an interpretation for 2SLS estimand of regressing Y on $\hat{S}=\hat{\gamma_0}+ \hat{\gamma_1} Z$. \\
+\textbf{Theorem 1} shows when $Z$ is binary, this estimand is a weighted average of LATE.
 \[\begin{aligned}
 \hat{\beta}_1^{2SLS}&=\frac{Cov(Y,Z)}{Cov(S,Z)} \\
 &=\frac{E(Y|Z=1)-E(Y|Z=0)}{E(S|Z=1)-E(S|Z=0)} \\
@@ -140,8 +149,9 @@ Theorem 1 shows when $Z$ is binary, this estimand is a weighted average of LATE.
 &=\sum_{j=1}^J w_j E(Y_j-Y_{j-1}|S_1 \geq j>S_0)
 \end{aligned}\]
 where the third line uses $(Y_j,S_Z) \perp Z$, the fourth line uses $S_1-S_0 \geq 0$. \\
-Theorem 2 extends binary $Z$ to $Z=\{0,1,2,...,K\}$ and shows then the 2SLS estimand is a weighted average of $\beta_{l,l-1}$ where
+\textbf{Theorem 2} extends binary $Z$ to $Z=\{0,1,2,...,K\}$ and shows then the 2SLS estimand is a weighted average of $\beta_{l,l-1}$ where
 \[\beta_{l,l-1}=\frac{E(Y|Z=l)-E(Y|Z=l-1)}{E(S|Z=l)-E(S|Z=l-1)}\]
+\textbf{Theorem 3} allows to control for other covariates.
 
 \section{Comments and questions}
 \begin{itemize}
